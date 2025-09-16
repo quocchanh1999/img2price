@@ -44,7 +44,7 @@ def load_artifacts():
         target_maps = joblib.load('target_encoding_maps.joblib')
         mean_price = joblib.load('global_mean_price.joblib')
         df_full = pd.read_excel("dichvucong_medicines_Final.xlsx")
-        train_cols = pd.read_csv("X_train_price_processed.csv").columns.tolist()
+        train_cols = pd.read_csv("XX_train_price_processed.csv").columns.tolist()
         return model, scaler, target_maps, mean_price, df_full, train_cols
     except FileNotFoundError as e:
         st.error(f"Loaded file error.")
