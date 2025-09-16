@@ -162,18 +162,20 @@ def extract_ingredient_features_ultimate(row):
 def parse_user_query(query):
     parsed = {"tenThuoc": "N/A", "hoatChat": np.nan, "hamLuong": np.nan, "soLuong": "N/A", "donViTinh": "N/A"}
     temp_query = query
-    
-    match_hc = re.search(r'\((.*?)\)', temp_query)
+    match_hc = re.search(r'^(.*?)\s*\((.*?)\)', temp_query)
     if match_hc:
-        parsed["hoatChat"] = match_hc.group(1).strip()
-        temp_query = temp_query.replace(match_hc.group(0), '')
-    
+        parsed["hoatChat"] = match_hc.group(1).strip()  
+        parsed["tenThuoc"] = match_hc.group(2).strip()
+        temp_query = temp_query.replace(match_hc.group(0), parsed["tenThuoc"]) 
+    else:
+        parsed["tenThuoc"] = temp_query.strip() 
+
     hamluong_pattern = r'(\d+[\.,]?\d*\s*(?:mg|g|mcg|ml|l|iu|ui|kg)(?:\s*/\s*(?:ml|g|viên))?)'
     match_hl = re.search(hamluong_pattern, temp_query, re.IGNORECASE)
     if match_hl:
         parsed["hamLuong"] = match_hl.group(1).strip()
         temp_query = temp_query.replace(match_hl.group(0), '')
-        
+
     unit_keywords = ['viên nang', 'viên nén', 'nang', 'viên', 'gói', 'ống', 'chai', 'lọ', 'hộp', 'tuýp']
     unit_pattern_sl = '|'.join(unit_keywords)
     match_sl = re.search(r'(\d+)\s*(' + unit_pattern_sl + r')\b', temp_query, re.IGNORECASE)
@@ -181,11 +183,13 @@ def parse_user_query(query):
         parsed["soLuong"] = f"{match_sl.group(1)} {match_sl.group(2)}"
         parsed["donViTinh"] = match_sl.group(2).capitalize()
         temp_query = temp_query.replace(match_sl.group(0), '')
+
+    if parsed["tenThuoc"] == "N/A":
+        parsed["tenThuoc"] = temp_query.strip()
     
-    parsed["tenThuoc"] = temp_query.strip()
     parsed["quyCachDongGoi"] = parsed["soLuong"] if pd.notna(parsed["soLuong"]) else parsed["tenThuoc"]
     return parsed
-
+    
 def parse_dosage_value(hamLuong_val):
     if pd.isnull(hamLuong_val):
         return 0.0
