@@ -6,4 +6,6 @@ rapidfuzz
 nltk
 easyocr
 pillow
+scikit-learn
+xgboost
 google-generativeai
