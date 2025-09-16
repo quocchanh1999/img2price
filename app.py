@@ -15,6 +15,9 @@ import asyncio
 import sys
 import io
 import google.generativeai as genai
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 if sys.platform.startswith("win"):
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
@@ -39,12 +42,12 @@ stemmer, ocr_reader = initialize_tools()
 @st.cache_resource
 def load_artifacts():
     try:
-        model = joblib.load("final_model.joblib")
-        scaler = joblib.load('scaler.joblib')
-        target_maps = joblib.load('target_encoding_maps.joblib')
-        mean_price = joblib.load('global_mean_price.joblib')
-        df_full = pd.read_excel("dichvucong_medicines_Final.xlsx")
-        train_cols = pd.read_csv("XX_train_price_processed.csv").columns.tolist()
+        model = joblib.load(os.path.join(BASE_DIR, "final_model.joblib"))
+        scaler = joblib.load(os.path.join(BASE_DIR, "scaler.joblib"))
+        target_maps = joblib.load(os.path.join(BASE_DIR, "target_encoding_maps.joblib"))
+        mean_price = joblib.load(os.path.join(BASE_DIR, "global_mean_price.joblib"))
+        df_full = pd.read_excel(os.path.join(BASE_DIR, "dichvucong_medicines_Final.xlsx"))
+        train_cols = pd.read_csv(os.path.join(BASE_DIR, "X_train_price_processed.csv")).columns.tolist()
         return model, scaler, target_maps, mean_price, df_full, train_cols
     except FileNotFoundError as e:
         st.error(f"Loaded file error.")
