@@ -380,7 +380,7 @@ st.title("Gợi ý Giá thuốc")
 model, scaler, target_maps, mean_price, df_full, train_cols = load_artifacts()
 
 if df_full is not None:
-    user_query_text = st.text_input("", placeholder="Nhập tên thuốc, ví dụ tên thuốc (hoạt chất) hàm lượng số lượng...", label_visibility="collapsed")
+    user_query_text = st.text_input("", placeholder="Nhập tên thuốc, ví dụ Hoạt chất (tên thuốc) hàm lượng số lượng...", label_visibility="collapsed")
     uploaded_file = st.file_uploader("", type=["png", "jpg", "jpeg"], label_visibility="collapsed")
 
     query_to_process = None
