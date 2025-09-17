@@ -389,10 +389,8 @@ if df_full is not None:
         with st.spinner("Đang đọc ảnh..."):
             image = Image.open(io.BytesIO(image_bytes))
             image_np = np.array(image)
-            # Tiền xử lý ảnh
             gray = cv2.cvtColor(image_np, cv2.COLOR_RGB2GRAY)
             _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-            # Denoise (loại bỏ nhiễu)
             denoised = cv2.fastNlMeansDenoising(thresh)
             start_time = time.time()
             ocr_text = ocr_reader.image_to_string(denoised, lang='vie+eng', config='--psm 6 --oem 1')
