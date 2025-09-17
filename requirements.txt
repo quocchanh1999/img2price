@@ -11,4 +11,4 @@ xgboost
 google-generativeai
 openpyxl
 pytesseract
-opencv-python
+opencv-python-headless
