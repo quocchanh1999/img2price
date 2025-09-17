@@ -13,9 +13,9 @@ from PIL import Image
 import io
 import asyncio
 import sys
-import io
 import google.generativeai as genai
 import os
+import pytesseract
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -31,11 +31,9 @@ def initialize_tools():
         nltk.data.find('tokenizers/punkt')
     except LookupError:
         nltk.download('punkt')
-
     stemmer = SnowballStemmer("english")
-    reader = easyocr.Reader(['vi', 'en'], gpu=False) 
-
-    return stemmer, reader
+    import cv2
+    return stemmer, pytesseract, cv2
 
 stemmer, ocr_reader = initialize_tools()
 
@@ -389,7 +387,16 @@ if df_full is not None:
     if uploaded_file is not None:
         image_bytes = uploaded_file.getvalue()
         with st.spinner("Đang đọc ảnh..."):
-            ocr_text = " ".join(ocr_reader.readtext(image_bytes, detail=0))
+            image = Image.open(io.BytesIO(image_bytes))
+            image_np = np.array(image)
+            # Tiền xử lý ảnh
+            gray = cv2.cvtColor(image_np, cv2.COLOR_RGB2GRAY)
+            _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            # Denoise (loại bỏ nhiễu)
+            denoised = cv2.fastNlMeansDenoising(thresh)
+            start_time = time.time()
+            ocr_text = ocr_reader.image_to_string(denoised, lang='vie+eng', config='--psm 6 --oem 1')
+            ocr_time = time.time() - start_time
         query_to_process = ocr_text
         source = "ocr"
         with st.expander("Xem toàn bộ văn bản nhận dạng được"):
