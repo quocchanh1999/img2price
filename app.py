@@ -34,8 +34,7 @@ def initialize_tools():
     stemmer = SnowballStemmer("english")
     import cv2
     return stemmer, pytesseract, cv2
-
-stemmer, ocr_reader = initialize_tools()
+stemmer, ocr_reader, cv2 = initialize_tools()
 
 @st.cache_resource
 def load_artifacts():
