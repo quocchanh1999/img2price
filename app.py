@@ -8,7 +8,6 @@ import unicodedata
 import nltk
 from nltk.stem.snowball import SnowballStemmer
 import unicodedata
-import easyocr
 from PIL import Image
 import io
 import asyncio
